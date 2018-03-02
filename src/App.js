@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import "./App.css";
+//import "bootstrap/dist/css/bootstrap.css";
+import "bootswatch/dist/journal/bootstrap.css";
+
+import { Grid, Row, Col, ButtonGroup, Button, InputGroup, InputGroupAddon, InputGroupButton } from "react-bootstrap";
 
 const PLACES = [
   { name: "Palo Alto", zip: "94303" },
@@ -19,7 +23,7 @@ class WeatherDisplay extends Component {
     const zip = this.props.zip;
     const URL = "http://api.openweathermap.org/data/2.5/weather?q=" +
       zip +
-      "&appid=b1b35bba8b434a28a0be2a3e1071ae5b&units=metric";
+      "&appid=b1b35bba8b434a28a0be2a3e1071ae5b&units=imperial";
     fetch(URL).then(res => res.json()).then(json => {
       this.setState({ weatherData: json });
     });
@@ -54,18 +58,31 @@ class App extends Component {
   render() {
     const activePlace = this.state.activePlace;
     return (
-      <div className="App">
-        {PLACES.map((place, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              this.setState({ activePlace: index });
-            }}
-          >
-            {place.name}
-          </button>
-        ))}
-        <WeatherDisplay key={activePlace} zip={PLACES[activePlace].zip} />
+      <div>
+        <Grid>
+          <Row>
+            <Col md={4} sm={4}>
+              <h3>Select a city</h3>
+              <input class="form-control"></input>
+              <br></br>
+              <ButtonGroup
+                bsStyle="pills"
+                stacked
+                activeKey={activePlace}
+                onSelect={index => {
+                  this.setState({ activePlace: index });
+                }}
+              >
+                {PLACES.map((place, index) => (
+                  <Button key={index} eventKey={index}>{place.name}</Button>
+                ))}
+              </ButtonGroup>
+            </Col>
+            <Col md={8} sm={8}>
+              <WeatherDisplay key={activePlace} zip={PLACES[activePlace].zip} />
+            </Col>
+          </Row>
+        </Grid>
       </div>
     );
   }
